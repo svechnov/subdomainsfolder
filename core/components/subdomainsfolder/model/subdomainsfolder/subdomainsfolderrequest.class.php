@@ -71,9 +71,14 @@ class SubdomainsFolderRequest extends modRequest
 				break;
 			case !in_array(MODX_HTTP_HOST, array_keys($this->domains)) AND MODX_HTTP_HOST == $domainHost:
 				break;
+
+			/* if folder is modResource */
 			case $this->modx->resourceMethod == 'id':
 				$this->modx->resourceIdentifier = $this->domains[MODX_HTTP_HOST]['id'];
 				break;
+//			/* if folder is modWebLink */
+//			case $this->modx->resourceMethod == 'id':
+//				break;
 			case $this->modx->resourceMethod == 'alias':
 				$this->modx->resourceIdentifier = rtrim($this->modx->resourceIdentifier, '/');
 				$this->modx->resourceIdentifier = $this->domains[MODX_HTTP_HOST]['alias'] . '/' . $this->modx->resourceIdentifier;
