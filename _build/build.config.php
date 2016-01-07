@@ -4,9 +4,9 @@
 define('PKG_NAME', 'SubdomainsFolder');
 define('PKG_NAME_LOWER', 'subdomainsfolder');
 
-define('PKG_VERSION', '1.0.1');
+define('PKG_VERSION', '1.0.3');
 define('PKG_RELEASE', 'beta');
-define('PKG_AUTO_INSTALL', true);
+define('PKG_AUTO_INSTALL', false);
 define('PKG_NAMESPACE_PATH', '{core_path}components/subdomainsfolder/');
 
 /* define paths */
@@ -45,6 +45,11 @@ define('BUILD_PLUGIN_UPDATE', true);
 define('BUILD_CHUNK_STATIC', false);
 define('BUILD_SNIPPET_STATIC', false);
 define('BUILD_PLUGIN_STATIC', false);
+
+$BUILD_VALIDATORS = array(
+	'extras',
+	'modmodx',
+);
 
 $BUILD_RESOLVERS = array(
 	'setting',

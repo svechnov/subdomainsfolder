@@ -15,11 +15,8 @@ class SubdomainsFolderRequest extends modRequest
 
 	function __construct(xPDO &$modx)
 	{
-		$modx = new SubdomainsFolderModX();
-		$modx->initialize('web');
 		$this->SubdomainsFolder = &$modx->SubdomainsFolder;
 		$this->domains = &$modx->domains;
-
 		parent::__construct($modx);
 	}
 
@@ -76,9 +73,9 @@ class SubdomainsFolderRequest extends modRequest
 			case $this->modx->resourceMethod == 'id':
 				$this->modx->resourceIdentifier = $this->domains[MODX_HTTP_HOST]['id'];
 				break;
-//			/* if folder is modWebLink */
-//			case $this->modx->resourceMethod == 'id':
-//				break;
+			/* if folder is modWebLink */
+			/*case $this->modx->resourceMethod == 'id':
+				break;*/
 			case $this->modx->resourceMethod == 'alias':
 				$this->modx->resourceIdentifier = rtrim($this->modx->resourceIdentifier, '/');
 				$this->modx->resourceIdentifier = $this->domains[MODX_HTTP_HOST]['alias'] . '/' . $this->modx->resourceIdentifier;
@@ -117,7 +114,6 @@ class SubdomainsFolderRequest extends modRequest
 	{
 		$resource = parent::getResource($method, $identifier, $options);
 
-
 		if (!$resource AND $this->modx->user->isAuthenticated('mgr')) {
 			$resource = $this->modx->getObject('modResource', (int)$this->modx->resourceIdentifier);
 		}
@@ -127,84 +123,6 @@ class SubdomainsFolderRequest extends modRequest
 		}
 
 		return $resource;
-	}
-
-}
-
-class SubdomainsFolderModX extends modX
-{
-
-	/** @var SubdomainsFolder $SubdomainsFolder */
-	public $SubdomainsFolder;
-	public $domains;
-
-	public function initialize($contextKey = 'web', $options = null)
-	{
-
-		parent::initialize($contextKey, $options);
-		$corePath = $this->getOption('subdomainsfolder_core_path', null, $this->getOption('core_path', null, MODX_CORE_PATH) . 'components/subdomainsfolder/');
-		$this->SubdomainsFolder = $this->getService('SubdomainsFolder', 'SubdomainsFolder', $corePath . 'model/subdomainsfolder/');
-		$this->SubdomainsFolder->initialize($this->context->key);
-		$this->domains = $this->SubdomainsFolder->Tools->getDomains();
-	}
-
-	public function makeUrl($id, $context = '', $args = '', $scheme = -1, array $options = array())
-	{
-		$url = '';
-		if ($validid = intval($id)) {
-			$id = $validid;
-			if ($context == '' || $this->context->get('key') == $context) {
-				$url = $this->context->makeUrl($id, $args, $scheme, $options);
-			}
-			if (empty($url) AND ($context !== $this->context->get('key'))) {
-				$ctx = null;
-				if ($context == '') {
-					/** @var PDOStatement $stmt */
-					if ($stmt = $this->prepare("SELECT context_key FROM " . $this->getTableName('modResource') . " WHERE id = :id")) {
-						$stmt->bindValue(':id', $id);
-						if ($contextKey = $this->getValue($stmt)) {
-							$ctx = $this->getContext($contextKey);
-						}
-					}
-				} else {
-					$ctx = $this->getContext($context);
-				}
-				if ($ctx) {
-					$url = $ctx->makeUrl($id, $args, 'full', $options);
-				}
-			}
-
-			if (!empty($url) AND $this->getOption('xhtml_urls', $options, false)) {
-				$url = preg_replace("/&(?!amp;)/", "&amp;", $url);
-			}
-
-			if (in_array(MODX_HTTP_HOST, array_keys($this->domains))) {
-				$url = str_replace($this->domains[MODX_HTTP_HOST]['alias'], '', $url);
-			}
-
-		} else {
-			$this->log(modX::LOG_LEVEL_ERROR, '`' . $id . '` is not a valid integer and may not be passed to makeUrl()');
-		}
-
-		return $url;
-	}
-
-	public function _postProcess()
-	{
-		if ($this->resourceGenerated AND $this->getOption('cache_resource', null, true)) {
-			if (
-				is_object($this->resource) AND
-				$this->resource instanceof modResource AND
-				$this->resource->get('id') AND
-				$this->resource->get('cacheable') AND
-				in_array(MODX_HTTP_HOST, array_keys($this->domains))
-			) {
-				$this->resource->_contextKey = $this->context->get('key');
-				$this->invokeEvent('OnBeforeSaveWebPageCache');
-				$this->cacheManager->generateResource($this->resource);
-			}
-		}
-		$this->invokeEvent('OnWebPageComplete');
 	}
 
 }

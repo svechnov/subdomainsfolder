@@ -2,13 +2,15 @@
 
 $exists = $chunks = false;
 $output = null;
+
+/** @var $options */
 switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 	case xPDOTransport::ACTION_INSTALL:
-		//$exists = $modx->getObject('transport.modTransportPackage', array('package_name' => 'pdoTools'));
+		$exists = $modx->getObject('transport.modTransportPackage', array('package_name' => 'ModModX'));
 		break;
 
 	case xPDOTransport::ACTION_UPGRADE:
-		//$exists = $modx->getObject('transport.modTransportPackage', array('package_name' => 'pdoTools'));
+		$exists = $modx->getObject('transport.modTransportPackage', array('package_name' => 'ModModX'));
 		if (!empty($options['attributes']['chunks'])) {
 			$chunks = '<ul id="formCheckboxes" style="height:200px;overflow:auto;">';
 			foreach ($options['attributes']['chunks'] as $k => $v) {
@@ -28,17 +30,17 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 }
 
 $output = '';
-/*
+
 if (!$exists) {
 	switch ($modx->getOption('manager_language')) {
 		case 'ru':
-			$output = 'Этот компонент требует <b>pdoTools</b> для быстрой работы сниппетов.<br/>Он будет автоматически скачан и установлен.';
+			$output = 'Этот компонент требует <b>ModModX</b> для расширения класса ModX.<br/>Он будет автоматически скачан и установлен.';
 			break;
 		default:
-			$output = 'This component requires <b>pdoTools</b> for fast work of snippets.<br/><br/>It will be automaticly downloaded and installed?';
+			$output = 'This component requires <b>ModModX</b> for extend ModX class.<br/><br/>It will be automaticly downloaded and installed?';
 	}
 }
-*/
+
 
 if ($chunks) {
 	/*
