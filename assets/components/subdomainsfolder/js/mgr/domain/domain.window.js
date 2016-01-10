@@ -5,7 +5,7 @@ subdomainsfolder.window.CreateDomain = function (config) {
 		width: 550,
 		autoHeight: true,
 		url: subdomainsfolder.config.connector_url,
-		action: 'mgr/status/create',
+		action: 'mgr/domain/create',
 		fields: this.getFields(config),
 		keys: [{
 			key: Ext.EventObject.ENTER, shift: true, fn: function () {
